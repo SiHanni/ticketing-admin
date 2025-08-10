@@ -1,0 +1,103 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type EventSummary {
+  endDate: DateTime!
+  id: ID!
+  openAt: DateTime!
+  startDate: DateTime!
+  title: String!
+}
+
+type Mutation {
+  """예약 확정(운영자)"""
+  confirmReservation(input: ReservationActionInput!): Boolean!
+
+  """예약 강제 취소(운영자)"""
+  forceCancelReservation(input: ReservationActionInput!): Boolean!
+
+  """핑퐁 테스트"""
+  ping: String!
+}
+
+type PaymentSummary {
+  id: ID!
+  paidAt: DateTime!
+  paymentMethod: String!
+}
+
+type Query {
+  """상태 점검용 쿼리"""
+  hello: String!
+
+  """공연별 예약 목록(커서 페이지네이션)"""
+  reservations(
+    """커서(내부 인코딩 문자열)"""
+    after: String
+
+    """생성일 시작(ISO8601)"""
+    createdFrom: String
+
+    """생성일 끝(ISO8601)"""
+    createdTo: String
+
+    """공연 ID"""
+    eventId: Int
+
+    """페이지 크기(1~100)"""
+    first: Int! = 20
+
+    """예약 상태"""
+    status: String
+
+    """사용자 이메일 검색(부분 문자열 허용)"""
+    userEmail: String
+  ): ReservationConnection!
+}
+
+input ReservationActionInput {
+  id: Int!
+}
+
+type ReservationConnection {
+  endCursor: String
+  hasNextPage: Boolean!
+  nodes: [ReservationNode!]!
+}
+
+type ReservationNode {
+  createdAt: DateTime!
+  event: EventSummary!
+  id: ID!
+  payment: PaymentSummary
+  seat: SeatSummary!
+  status: ReservationStatus!
+  user: UserSummary!
+}
+
+enum ReservationStatus {
+  CANCELLED
+  CONFIRMED
+  EXPIRED
+  PENDING
+}
+
+type SeatSummary {
+  grade: String!
+  id: ID!
+  number: Float!
+  row: Float!
+  section: String!
+}
+
+type UserSummary {
+  email: String!
+  id: ID!
+  name: String
+}
